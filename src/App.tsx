@@ -1,35 +1,67 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Box, Container, Typography } from "@mui/material";
+import { PasteInput } from "./components/PasteInput";
+import { DataTable } from "./components/DataTable";
+import { AppOverview } from "./components/AppOverview";
+import { useState } from "react";
+import type { CellData, ProcessedCellData, OriginalCellData } from "./types";
+import { processTableData } from "./utils/tableProcessing";
+import { validateTable } from "./utils/validation";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [originalData, setOriginalData] = useState<OriginalCellData[][]>([]);
+  const [processedData, setProcessedData] = useState<ProcessedCellData[][]>([]);
+  const [errors, setErrors] = useState<string[]>([]);
+
+  const handleDataPaste = (data: CellData[][]) => {
+    const validation = validateTable(data);
+    setErrors(validation.errors);
+
+    if (validation.isValid) {
+      const { processedData: newProcessedData, originalData: newOriginalData } =
+        processTableData(data);
+      setOriginalData(newOriginalData);
+      setProcessedData(newProcessedData);
+    } else {
+      setOriginalData([]);
+      setProcessedData([]);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Container maxWidth="lg">
+      <Box sx={{ my: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          テストデータ行列ツール
+        </Typography>
+        <AppOverview />
+        <Box sx={{ mt: 4 }} />
+        <PasteInput onDataPaste={handleDataPaste} />
+        {errors.length > 0 && (
+          <Box sx={{ mt: 2, mb: 2 }}>
+            <Typography color="error" component="div">
+              {errors.map((error, index) => (
+                <div key={index}>{error}</div>
+              ))}
+            </Typography>
+          </Box>
+        )}
+        <Box sx={{ mt: 4, display: "flex", flexDirection: "column", gap: 4 }}>
+          <Box>
+            <Typography variant="h6" gutterBottom>
+              元の表（{originalData.length}行）
+            </Typography>
+            <DataTable data={originalData} isProcessed={false} />
+          </Box>
+          <Box>
+            <Typography variant="h6" gutterBottom>
+              最小化済み表（{processedData.length}行）
+            </Typography>
+            <DataTable data={processedData} isProcessed={true} />
+          </Box>
+        </Box>
+      </Box>
+    </Container>
+  );
 }
 
-export default App
+export default App;
