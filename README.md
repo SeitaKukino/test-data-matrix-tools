@@ -1,54 +1,42 @@
-# React + TypeScript + Vite
+# テストデータ行列ツール
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+テストデータの行列（マトリックス）を最小化するためのWebアプリケーションです。
 
-Currently, two official plugins are available:
+## 機能
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Excelからコピーしたテストデータを貼り付けて表示
+- 空白や「-」をワイルドカードとして扱い、同じパターンの行を統合
+- 元の表と最小化済みの表を同時に表示し、行の対応関係を確認可能
 
-## Expanding the ESLint configuration
+## 開発環境での実行
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# 依存関係のインストール
+npm install
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+# 開発サーバーの起動
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Dockerでの実行
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Dockerを使用してアプリケーションを実行する場合：
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+# アプリケーションのビルドと起動
+docker-compose up -d
+
+# アプリケーションの停止
+docker-compose down
 ```
+
+アプリケーションは http://localhost:8080 でアクセス可能です。
+
+## 技術スタック
+
+- React
+- TypeScript
+- Material-UI
+- Vite
+- Docker
+- Nginx
